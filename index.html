@@ -3,71 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoT Device Control - Login</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Loading...</title>
+    <style>
+        body { background-color: #121212; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #E0E0E0; font-family: sans-serif; }
+        .spinner { border: 4px solid #333; border-top: 4px solid #4A90E2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <div class="auth-form-wrapper">
-            <div class="form-header">
-                <h1 id="form-title">Login</h1>
-                <p>Welcome back!!! Please enter your details.</p>
-            </div>
+    <div class="spinner"></div>
 
-            <!-- Login and Register Forms -->
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required>
-                </div>
-                <div class="input-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="remember-me">
-                        Remember Me
-                    </label>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
-                </div>
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
+    <!-- This script will handle the redirection -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        
+        // PASTE YOUR FIREBASE CONFIG HERE
+        const firebaseConfig = {
+            apiKey: "AIzaSyATVt7ebZMz-6U3xr22tPexY55pLW3AWB8",
+            authDomain: "pico-iot-5ae0c.firebaseapp.com",
+            databaseURL: "https://pico-iot-5ae0c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "pico-iot-5ae0c",
+            storageBucket: "pico-iot-5ae0c.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-            <form id="register-form" class="hidden">
-                 <div class="input-group">
-                    <label for="register-email">Email</label>
-                    <input type="email" id="register-email" required>
-                </div>
-                <div class="input-group">
-                    <label for="register-password">Password</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                 <div class="input-group">
-                    <label for="register-confirm-password">Confirm Password</label>
-                    <input type="password" id="register-confirm-password" required>
-                </div>
-                <button type="submit" class="btn-primary">Create Account</button>
-            </form>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-            <div class="form-footer">
-                <p id="footer-text">Don't have an account? <a href="#" id="switch-to-register">Sign Up</a></p>
-            </div>
-            
-            <p id="error-message" class="error-message"></p>
-        </div>
-        <div class="auth-art-wrapper">
-             <div class="art-content">
-                <h2>Control Your World</h2>
-                <p>A seamless connection between you and your devices, right at your fingertips.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Firebase and App Logic -->
-    <script type="module" src="app.js"></script>
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // If user is logged in, go to the dashboard.
+                window.location.replace('dashboard.html');
+            } else {
+                // If user is not logged in, go to the login page.
+                window.location.replace('login.html');
+            }
+        });
+    </script>
 </body>
 </html>
