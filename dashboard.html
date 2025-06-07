@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IoT Control</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="dashboard-header">
+        <div class="logo">
+            <h1>Device Dashboard</h1>
+        </div>
+        <div class="user-info">
+            <span id="user-email-display"></span>
+            <button id="logout-button" class="btn-secondary">Logout</button>
+        </div>
+    </header>
+
+    <main class="dashboard-main">
+        <div id="loading-spinner" class="spinner-container">
+            <div class="spinner"></div>
+            <p>Loading your devices...</p>
+        </div>
+
+        <div id="device-grid" class="device-grid hidden">
+            <!-- Device cards will be dynamically inserted here by JavaScript -->
+        </div>
+
+        <div id="no-devices-message" class="info-message hidden">
+            <h2>No Devices Found</h2>
+            <p>We couldn't find any devices associated with your account.</p>
+        </div>
+    </main>
+
+    <!-- Firebase and App Logic -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
