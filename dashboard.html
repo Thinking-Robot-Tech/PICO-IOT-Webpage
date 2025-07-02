@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PICO IoT - Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50">
+
+    <!-- Main App Screen -->
+    <div class="w-full max-w-md mx-auto h-screen flex flex-col bg-white shadow-lg">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-gray-800">My Devices</h1>
+            <!-- Placeholder for a settings/logout icon later -->
+            <button class="text-gray-500 hover:text-gray-800">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Device List (Empty State) -->
+        <main class="flex-grow flex flex-col items-center justify-center text-center p-8">
+            <svg class="w-16 h-16 text-gray-300 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
+            </svg>
+            <h2 class="text-xl font-semibold text-gray-700">No Devices Found</h2>
+            <p class="text-gray-500 mt-2">Click the '+' button to add your first PICO device.</p>
+        </main>
+
+        <!-- Floating Action Button (FAB) -->
+        <div class="absolute bottom-6 right-6" style="right: calc(50% - 200px + 24px);">
+            <button id="addDeviceBtn" class="bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-transform transform hover:scale-110">
+                <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Instructions Modal (Initially Hidden) -->
+    <div id="instructionsModal" class="fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
+        <div id="modalContent" class="w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Add a New Device</h2>
+                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Instructions -->
+            <div class="space-y-4 text-gray-700">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">1</div>
+                    <p class="ml-4">Open your phone's <strong>Wi-Fi settings</strong>.</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">2</div>
+                    <p class="ml-4">Connect to the network: <strong class="text-blue-700">PICO-Setup</strong></p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">3</div>
+                    <p class="ml-4">Use the password: <strong class="text-blue-700">password</strong></p>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">4</div>
+                    <p class="ml-4">A setup page should open automatically. If not, click the link below.</p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="mt-8">
+                <a href="http://192.168.4.1" target="_blank" class="block w-full text-center bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    Go to Setup Page
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>

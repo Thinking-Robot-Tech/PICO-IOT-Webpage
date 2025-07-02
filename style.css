@@ -1,0 +1,29 @@
+/* Sets the base font and prevents the blue tap highlight on mobile */
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Styles for the modal to slide up from the bottom.
+  We control the visibility by adding/removing the 'modal-hidden' class with JavaScript.
+*/
+
+/* The backdrop and container */
+#instructionsModal {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* The content that slides */
+#modalContent {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Initial state: modal is off-screen at the bottom */
+.modal-hidden #modalContent {
+    transform: translateY(100%);
+}
+
+/* Final state: modal is slid up into view */
+.modal-visible #modalContent {
+    transform: translateY(0);
+}
