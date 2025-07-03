@@ -8,22 +8,22 @@ body {
   We control the visibility by adding/removing the 'modal-hidden' class with JavaScript.
 */
 
-/* The backdrop and container */
-#instructionsModal {
+/* The semi-transparent backdrop */
+.modal-container {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* The content that slides */
-#modalContent {
+/* The white content pane that slides */
+.modal-content {
     transition: transform 0.3s ease-in-out;
 }
 
 /* Initial state: modal is off-screen at the bottom */
-.modal-hidden #modalContent {
+.modal-hidden .modal-content {
     transform: translateY(100%);
 }
 
 /* Final state: modal is slid up into view */
-.modal-visible #modalContent {
+.modal-visible .modal-content {
     transform: translateY(0);
 }

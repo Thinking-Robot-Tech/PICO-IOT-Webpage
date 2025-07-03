@@ -1,67 +1,85 @@
-// Wait for the entire HTML document to be loaded before running the script
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Get the necessary elements from the DOM
+    // --- Get All Elements ---
     const addDeviceBtn = document.getElementById('addDeviceBtn');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const instructionsModal = document.getElementById('instructionsModal');
-
-    /**
-     * Opens the instruction modal with a smooth slide-up animation.
-     */
-    function openModal() {
-        // First, make the modal container visible
-        instructionsModal.classList.remove('hidden');
-        
-        // Use a tiny timeout (10ms) to allow the browser to apply the 'display' change.
-        // This ensures the slide-up transition is smooth.
-        setTimeout(() => {
-            instructionsModal.classList.remove('modal-hidden');
-            instructionsModal.classList.add('modal-visible');
-        }, 10);
-    }
-
-    /**
-     * Closes the instruction modal with a smooth slide-down animation.
-     */
-    function closeModal() {
-        instructionsModal.classList.remove('modal-visible');
-        instructionsModal.classList.add('modal-hidden');
-        
-        // Wait for the slide-down animation to finish (300ms) before hiding the element completely.
-        // This duration must match the transition duration in style.css.
-        setTimeout(() => {
-            instructionsModal.classList.add('hidden');
-        }, 300);
-    }
-
-    // --- Event Listeners ---
-
-    // Open the modal when the '+' button is clicked
-    if (addDeviceBtn) {
-        addDeviceBtn.addEventListener('click', openModal);
-    }
-
-    // Close the modal when the 'X' button is clicked
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', closeModal);
-    }
     
-    // Close the modal if the user clicks on the dark background overlay
-    if (instructionsModal) {
-        instructionsModal.addEventListener('click', (event) => {
-            // Check if the click was on the modal backdrop itself, not on the content
-            if (event.target === instructionsModal) {
-                closeModal();
-            }
-        });
+    // QR Scanner Modal
+    const qrScannerModal = document.getElementById('qrScannerModal');
+    const simulateScanBtn = document.getElementById('simulateScanBtn');
+    const cancelScanBtn = document.getElementById('cancelScanBtn');
+
+    // Claim Code Modal
+    const claimCodeModal = document.getElementById('claimCodeModal');
+    const claimCodeDisplay = document.getElementById('claimCodeDisplay');
+    const copyCodeBtn = document.getElementById('copyCodeBtn');
+    const goToInstructionsBtn = document.getElementById('goToInstructionsBtn');
+
+    // Instructions Modal
+    const instructionsModal = document.getElementById('instructionsModal');
+    const closeInstructionsBtn = document.getElementById('closeInstructionsBtn');
+
+    // --- Generic Modal Control Functions ---
+    function openModal(modal) {
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('modal-hidden'), 10);
     }
 
-    // Optional: Close the modal with the 'Escape' key on a computer
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && !instructionsModal.classList.contains('hidden')) {
-            closeModal();
-        }
+    function closeModal(modal) {
+        if (!modal) return;
+        modal.classList.add('modal-hidden');
+        setTimeout(() => modal.classList.add('hidden'), 300); // Match CSS transition time
+    }
+
+    // --- Event Listeners and Flow Logic ---
+
+    // 1. User clicks the '+' button to start the process
+    addDeviceBtn.addEventListener('click', () => {
+        openModal(qrScannerModal);
     });
+
+    // --- QR SCANNER MODAL ---
+    // 2. User simulates a successful scan
+    simulateScanBtn.addEventListener('click', () => {
+        closeModal(qrScannerModal);
+        
+        // Generate and display a random 6-digit code
+        const codePart1 = Math.floor(100 + Math.random() * 900);
+        const codePart2 = Math.floor(100 + Math.random() * 900);
+        const fullCode = `${codePart1}-${codePart2}`;
+        claimCodeDisplay.textContent = fullCode;
+        
+        openModal(claimCodeModal);
+    });
+
+    cancelScanBtn.addEventListener('click', () => closeModal(qrScannerModal));
+
+    // --- CLAIM CODE MODAL ---
+    // 3. User wants to proceed to the connection instructions
+    goToInstructionsBtn.addEventListener('click', () => {
+        closeModal(claimCodeModal);
+        openModal(instructionsModal);
+    });
+    
+    // Clipboard functionality
+    copyCodeBtn.addEventListener('click', () => {
+        const codeToCopy = claimCodeDisplay.textContent;
+        navigator.clipboard.writeText(codeToCopy).then(() => {
+            const originalText = copyCodeBtn.innerHTML;
+            copyCodeBtn.innerHTML = 'Copied!';
+            copyCodeBtn.disabled = true;
+            setTimeout(() => {
+                 copyCodeBtn.innerHTML = originalText;
+                 copyCodeBtn.disabled = false;
+            }, 1500);
+        }).catch(err => {
+            console.error('Failed to copy code: ', err);
+            alert('Failed to copy code.');
+        });
+    });
+
+    // --- INSTRUCTIONS MODAL ---
+    // 4. User closes the final instructions modal
+    closeInstructionsBtn.addEventListener('click', () => closeModal(instructionsModal));
 
 });
