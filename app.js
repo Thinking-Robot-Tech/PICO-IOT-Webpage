@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // QR Scanner Modal Elements
     const qrScannerModal = document.getElementById('qrScannerModal');
-    const simulateScanBtn = document.getElementById('simulateScanBtn');
+    const qrVideo = document.getElementById('qrVideo');
+    const qrCanvas = document.getElementById('qrCanvas');
+    const qrCanvasContext = qrCanvas.getContext('2d');
+    const loadingMessage = document.getElementById('loadingMessage');
     const cancelScanBtn = document.getElementById('cancelScanBtn');
 
     // Claim Code Modal Elements
@@ -18,11 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const instructionsModal = document.getElementById('instructionsModal');
     const closeInstructionsBtn = document.getElementById('closeInstructionsBtn');
 
+    let videoStream = null;
+
     // --- Generic Modal Control Functions ---
     function openModal(modal) {
-        if (!modal) return; // Guard against null elements
+        if (!modal) return;
         modal.classList.remove('hidden');
-        // Use a timeout to allow the display property to apply before starting the transition
         setTimeout(() => {
             modal.classList.remove('modal-hidden');
             modal.classList.add('modal-visible');
@@ -30,26 +34,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function closeModal(modal) {
-        if (!modal) return; // Guard against null elements
+        if (!modal) return;
         modal.classList.add('modal-hidden');
         modal.classList.remove('modal-visible');
-        // Wait for the transition to finish before hiding the modal
         setTimeout(() => {
             modal.classList.add('hidden');
-        }, 300); // Must match the CSS transition duration
+        }, 300);
     }
 
-    // --- Event Listeners and Flow Logic ---
-
-    // 1. User clicks the '+' button to start the process
-    if (addDeviceBtn) {
-        addDeviceBtn.addEventListener('click', () => openModal(qrScannerModal));
+    // --- QR SCANNER LOGIC ---
+    function startScanner() {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+            .then(function(stream) {
+                videoStream = stream;
+                qrVideo.srcObject = stream;
+                loadingMessage.classList.add('hidden');
+                qrVideo.play();
+                requestAnimationFrame(tick); // Start the scanning loop
+            })
+            .catch(function(err) {
+                console.error("Camera Error:", err);
+                loadingMessage.textContent = "❌ Camera access denied.";
+            });
     }
 
-    // --- QR SCANNER MODAL ---
-    // 2. User simulates a successful scan
-    if (simulateScanBtn) {
-        simulateScanBtn.addEventListener('click', () => {
+    function stopScanner() {
+        if (videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
+    }
+
+    function tick() {
+        if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
+            qrCanvas.height = qrVideo.videoHeight;
+            qrCanvas.width = qrVideo.videoWidth;
+            qrCanvasContext.drawImage(qrVideo, 0, 0, qrCanvas.width, qrCanvas.height);
+            const imageData = qrCanvasContext.getImageData(0, 0, qrCanvas.width, qrCanvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert",
+            });
+
+            if (code) {
+                // QR Code Found!
+                handleSuccessfulScan(code.data);
+                return; // Exit the loop
+            }
+        }
+        // If no code is found, continue the loop
+        if(videoStream) {
+            requestAnimationFrame(tick);
+        }
+    }
+
+    function handleSuccessfulScan(scannedData) {
+        stopScanner();
+        console.log("Scanned QR Code:", scannedData);
+
+        // Optional: Add validation for the scanned data format
+        if (scannedData && scannedData.startsWith("PICO-IOT:")) {
             closeModal(qrScannerModal);
             
             // Generate and display a random 6-digit code
@@ -59,16 +102,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if(claimCodeDisplay) claimCodeDisplay.textContent = fullCode;
             
             openModal(claimCodeModal);
+        } else {
+            alert("Invalid PICO IoT QR code scanned. Please try again.");
+            // Restart the scanner or close the modal
+            closeModal(qrScannerModal);
+        }
+    }
+
+    // --- Event Listeners and Flow Logic ---
+
+    // 1. User clicks the '+' button
+    if (addDeviceBtn) {
+        addDeviceBtn.addEventListener('click', () => {
+            openModal(qrScannerModal);
+            startScanner();
         });
     }
 
+    // --- QR SCANNER MODAL ---
     if (cancelScanBtn) {
-        cancelScanBtn.addEventListener('click', () => closeModal(qrScannerModal));
+        cancelScanBtn.addEventListener('click', () => {
+            stopScanner();
+            closeModal(qrScannerModal);
+        });
     }
 
-
     // --- CLAIM CODE MODAL ---
-    // 3. User wants to proceed to the connection instructions
     if (goToInstructionsBtn) {
         goToInstructionsBtn.addEventListener('click', () => {
             closeModal(claimCodeModal);
@@ -76,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Clipboard functionality
     if (copyCodeBtn) {
         copyCodeBtn.addEventListener('click', () => {
             const codeToCopy = claimCodeDisplay.textContent;
@@ -96,9 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- INSTRUCTIONS MODAL ---
-    // 4. User closes the final instructions modal
     if (closeInstructionsBtn) {
         closeInstructionsBtn.addEventListener('click', () => closeModal(instructionsModal));
     }
-
 });
