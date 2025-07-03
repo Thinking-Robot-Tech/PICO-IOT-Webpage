@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrCanvasContext = qrCanvas.getContext('2d');
     const loadingMessage = document.getElementById('loadingMessage');
     const cancelScanBtn = document.getElementById('cancelScanBtn');
+    const openManualEntryBtn = document.getElementById('openManualEntryBtn');
+
+    // Manual Entry Modal Elements
+    const manualEntryModal = document.getElementById('manualEntryModal');
+    const manualIdInput = document.getElementById('manualIdInput');
+    const submitManualIdBtn = document.getElementById('submitManualIdBtn');
+    const cancelManualEntryBtn = document.getElementById('cancelManualEntryBtn');
 
     // Claim Code Modal Elements
     const claimCodeModal = document.getElementById('claimCodeModal');
@@ -44,12 +51,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- QR SCANNER LOGIC ---
     function startScanner() {
+        // Reset loading message in case it was changed to an error
+        loadingMessage.textContent = "🎥 Requesting Camera Access...";
+        loadingMessage.classList.remove('hidden');
+
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
             .then(function(stream) {
                 videoStream = stream;
                 qrVideo.srcObject = stream;
-                loadingMessage.classList.add('hidden');
                 qrVideo.play();
+                loadingMessage.classList.add('hidden');
                 requestAnimationFrame(tick); // Start the scanning loop
             })
             .catch(function(err) {
@@ -66,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function tick() {
-        if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
+        if (videoStream && qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
             qrCanvas.height = qrVideo.videoHeight;
             qrCanvas.width = qrVideo.videoWidth;
             qrCanvasContext.drawImage(qrVideo, 0, 0, qrCanvas.width, qrCanvas.height);
@@ -76,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (code) {
-                // QR Code Found!
                 handleSuccessfulScan(code.data);
                 return; // Exit the loop
             }
@@ -89,11 +99,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleSuccessfulScan(scannedData) {
         stopScanner();
-        console.log("Scanned QR Code:", scannedData);
+        console.log("Scanned/Entered Data:", scannedData);
 
-        // Optional: Add validation for the scanned data format
-        if (scannedData && scannedData.startsWith("PICO-IOT:")) {
+        // Validate the data format (works for both QR and manual entry)
+        const expectedPrefix = "PICO-IOT:";
+        let deviceId = "";
+
+        if (scannedData && scannedData.startsWith(expectedPrefix)) {
+            deviceId = scannedData.substring(expectedPrefix.length);
+        } else if (scannedData && scannedData.includes(':')) { // Simple validation for manual MAC address
+            deviceId = scannedData;
+        }
+
+        if (deviceId) {
+            // Close the current modal (either scanner or manual entry)
             closeModal(qrScannerModal);
+            closeModal(manualEntryModal);
             
             // Generate and display a random 6-digit code
             const codePart1 = Math.floor(100 + Math.random() * 900);
@@ -103,9 +124,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             openModal(claimCodeModal);
         } else {
-            alert("Invalid PICO IoT QR code scanned. Please try again.");
-            // Restart the scanner or close the modal
+            alert("Invalid Device ID format. Please try again.");
             closeModal(qrScannerModal);
+            closeModal(manualEntryModal);
         }
     }
 
@@ -126,6 +147,29 @@ document.addEventListener('DOMContentLoaded', () => {
             closeModal(qrScannerModal);
         });
     }
+    if (openManualEntryBtn) {
+        openManualEntryBtn.addEventListener('click', () => {
+            stopScanner();
+            closeModal(qrScannerModal);
+            openModal(manualEntryModal);
+        });
+    }
+
+    // --- MANUAL ENTRY MODAL ---
+    if (submitManualIdBtn) {
+        submitManualIdBtn.addEventListener('click', () => {
+            const manualId = manualIdInput.value;
+            if (manualId) {
+                handleSuccessfulScan(manualId);
+            } else {
+                alert("Please enter a Device ID.");
+            }
+        });
+    }
+    if (cancelManualEntryBtn) {
+        cancelManualEntryBtn.addEventListener('click', () => closeModal(manualEntryModal));
+    }
+
 
     // --- CLAIM CODE MODAL ---
     if (goToInstructionsBtn) {

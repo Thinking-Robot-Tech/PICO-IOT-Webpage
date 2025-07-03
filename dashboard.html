@@ -51,7 +51,19 @@
                     <p class="text-white">🎥 Requesting Camera Access...</p>
                 </div>
             </div>
-            <button id="cancelScanBtn" class="mt-4 w-full text-center text-gray-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Cancel</button>
+            <button id="openManualEntryBtn" class="mt-4 w-full text-center text-sm text-blue-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Can't scan? Enter ID Manually</button>
+            <button id="cancelScanBtn" class="mt-1 w-full text-center text-gray-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div id="manualEntryModal" class="modal-container fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
+        <div class="modal-content w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
+            <h2 class="text-xl font-bold text-gray-900 text-center mb-4">Enter Device ID</h2>
+            <p class="text-center text-gray-500 mb-4">Type the MAC address printed on your device.</p>
+            <input type="text" id="manualIdInput" placeholder="e.g., 1A:2B:3C:4D:5E:6F" class="w-full p-3 border-2 border-gray-300 rounded-lg text-center font-mono text-lg focus:border-blue-500 focus:ring-blue-500">
+            <button id="submitManualIdBtn" class="mt-4 w-full text-center bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Submit ID</button>
+            <button id="cancelManualEntryBtn" class="mt-2 w-full text-center text-gray-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Cancel</button>
         </div>
     </div>
 
@@ -62,7 +74,7 @@
                 <div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
                     <svg class="w-10 h-10 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-900 mt-4">Device Scanned!</h2>
+                <h2 class="text-xl font-bold text-gray-900 mt-4">Device Ready to Claim!</h2>
                 <p class="text-gray-500 mt-1">Your temporary claim code is ready.</p>
             </div>
             <div class="bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center my-6">
