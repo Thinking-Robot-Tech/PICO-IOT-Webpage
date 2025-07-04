@@ -10,16 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUser = null;
 
     // --- Auth Guard ---
-    // Listen for auth state changes to protect the page
     auth.onAuthStateChanged(user => {
         if (user) {
-            // User is signed in.
             currentUser = user;
             console.log("Dashboard access granted for user:", currentUser.uid);
         } else {
-            // No user is signed in. Redirect to the auth page.
             console.log("No user found, redirecting to auth page.");
-            // Adjust the path based on your GitHub repository name.
             const repoName = 'PICO-IOT-Webpage'; 
             window.location.replace(`/${repoName}/auth.html`);
         }
@@ -55,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         signOutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
                 console.log('User signed out successfully.');
-                // The onAuthStateChanged listener will automatically handle the redirect.
             }).catch((error) => {
                 console.error('Sign out error', error);
             });
@@ -79,14 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const tenMinutes = 10 * 60 * 1000;
         const expiration = new Date(Date.now() + tenMinutes);
 
+        const claimData = {
+            claimCode: {
+                code: fullCode,
+                deviceId: deviceId,
+                expiresAt: firebase.firestore.Timestamp.fromDate(expiration)
+            }
+        };
+
         try {
-            await userRef.update({
-                claimCode: {
-                    code: fullCode,
-                    deviceId: deviceId,
-                    expiresAt: firebase.firestore.Timestamp.fromDate(expiration)
-                }
-            });
+            // *** THE FIX IS HERE: Using .set() with {merge: true} ***
+            // This will create the document if it doesn't exist, or update it if it does.
+            await userRef.set(claimData, { merge: true });
+
             console.log(`Claim code ${fullCode} stored for user ${currentUser.uid}`);
             
             // Now that the code is saved, show it to the user.
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (deviceId) {
             closeModal(qrScannerModal);
             closeModal(manualEntryModal);
-            generateAndStoreClaimCode(deviceId); // Call the new Firestore function
+            generateAndStoreClaimCode(deviceId);
         } else {
             alert("Invalid Device ID format. Please try again.");
             closeModal(qrScannerModal);
@@ -124,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- All other modal and scanner logic remains the same ---
-    // (The code for openModal, closeModal, startScanner, stopScanner, tick, and event listeners)
     
     function openModal(modal) { if (!modal) return; modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('modal-hidden'); modal.classList.add('modal-visible'); }, 10); }
     function closeModal(modal) { if (!modal) return; modal.classList.add('modal-hidden'); modal.classList.remove('modal-visible'); setTimeout(() => { modal.classList.add('hidden'); }, 300); }
@@ -140,4 +139,3 @@ document.addEventListener('DOMContentLoaded', () => {
     if (copyCodeBtn) { copyCodeBtn.addEventListener('click', () => { const codeToCopy = claimCodeDisplay.textContent; navigator.clipboard.writeText(codeToCopy).then(() => { const originalHTML = copyCodeBtn.innerHTML; copyCodeBtn.innerHTML = 'Copied!'; copyCodeBtn.disabled = true; setTimeout(() => { copyCodeBtn.innerHTML = originalHTML; copyCodeBtn.disabled = false; }, 1500); }).catch(err => { console.error('Failed to copy code: ', err); alert('Failed to copy code.'); }); }); }
     if (closeInstructionsBtn) { closeInstructionsBtn.addEventListener('click', () => closeModal(instructionsModal)); }
 });
- 
