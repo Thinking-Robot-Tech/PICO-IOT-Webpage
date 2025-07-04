@@ -140,3 +140,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (copyCodeBtn) { copyCodeBtn.addEventListener('click', () => { const codeToCopy = claimCodeDisplay.textContent; navigator.clipboard.writeText(codeToCopy).then(() => { const originalHTML = copyCodeBtn.innerHTML; copyCodeBtn.innerHTML = 'Copied!'; copyCodeBtn.disabled = true; setTimeout(() => { copyCodeBtn.innerHTML = originalHTML; copyCodeBtn.disabled = false; }, 1500); }).catch(err => { console.error('Failed to copy code: ', err); alert('Failed to copy code.'); }); }); }
     if (closeInstructionsBtn) { closeInstructionsBtn.addEventListener('click', () => closeModal(instructionsModal)); }
 });
+ 
