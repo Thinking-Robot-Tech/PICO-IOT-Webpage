@@ -2,29 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- This meta tag instantly redirects the browser to dashboard.html -->
-    <meta http-equiv="refresh" content="0; url=dashboard.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirecting to PICO IoT</title>
-    
-    <!-- The following is for the brief moment before redirection or if it fails -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>PICO IoT</title>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        body { font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #f0f2f5; }
+        .loader { font-size: 1.2rem; color: #555; }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="text-center p-4">
-        <p class="text-lg text-gray-700">Loading your dashboard...</p>
-        <p class="mt-4 text-sm text-gray-500">
-            If you are not redirected automatically, 
-            <a href="dashboard.html" class="text-blue-600 hover:underline font-semibold">click here</a>.
-        </p>
-    </div>
+<body>
+    <p class="loader">Loading...</p>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <!-- Your custom scripts -->
+    <script src="app.js"></script>
+    <script>
+        // Use onAuthStateChanged to check the user's login state
+        firebase.auth().onAuthStateChanged(user => {
+            // IMPORTANT: Adjust the path based on your GitHub repository name.
+            const repoName = 'PICO-IOT-Webpage'; 
+
+            if (user) {
+                // User is signed in, redirect to the dashboard.
+                console.log('User is logged in. Redirecting to dashboard...');
+                window.location.replace(`/${repoName}/dashboard.html`);
+            } else {
+                // No user is signed in, redirect to the auth page.
+                console.log('No user logged in. Redirecting to auth page...');
+                window.location.replace(`/${repoName}/auth.html`);
+            }
+        });
+    </script>
 </body>
 </html>

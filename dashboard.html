@@ -19,8 +19,9 @@
         <!-- Header -->
         <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
             <h1 class="text-xl font-bold text-gray-800">My Devices</h1>
-            <button class="text-gray-500 hover:text-gray-800">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+            <!-- Sign Out Button -->
+            <button id="signOutBtn" class="text-sm font-semibold text-blue-600 hover:text-blue-800">
+                Sign Out
             </button>
         </header>
 
@@ -39,8 +40,7 @@
         </div>
     </div>
 
-    <!-- MODALS CONTAINER -->
-    <!-- QR Scanner Modal -->
+    <!-- MODALS CONTAINER (Same as before) -->
     <div id="qrScannerModal" class="modal-container fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
         <div class="modal-content w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
             <h2 class="text-xl font-bold text-gray-900 text-center mb-4">Scan Device QR Code</h2>
@@ -55,8 +55,6 @@
             <button id="cancelScanBtn" class="mt-1 w-full text-center text-gray-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Cancel</button>
         </div>
     </div>
-
-    <!-- Manual Entry Modal -->
     <div id="manualEntryModal" class="modal-container fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
         <div class="modal-content w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
             <h2 class="text-xl font-bold text-gray-900 text-center mb-4">Enter Device ID</h2>
@@ -66,8 +64,6 @@
             <button id="cancelManualEntryBtn" class="mt-2 w-full text-center text-gray-600 font-semibold py-2 hover:bg-gray-100 rounded-lg">Cancel</button>
         </div>
     </div>
-
-    <!-- Claim Code Modal -->
     <div id="claimCodeModal" class="modal-container fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
         <div class="modal-content w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
             <div class="text-center">
@@ -87,8 +83,6 @@
             <button id="goToInstructionsBtn" class="mt-2 w-full text-center bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700">Next: Connect to Device</button>
         </div>
     </div>
-    
-    <!-- Connection Instructions Modal -->
     <div id="instructionsModal" class="modal-container fixed inset-0 z-50 flex items-end bg-black bg-opacity-50 hidden modal-hidden">
         <div class="modal-content w-full max-w-md mx-auto bg-white rounded-t-2xl p-6 shadow-xl">
             <div class="flex justify-between items-center mb-4">
@@ -108,6 +102,13 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Your custom scripts -->
     <script src="app.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 </html>

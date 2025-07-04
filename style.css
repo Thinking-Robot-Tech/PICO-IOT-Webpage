@@ -4,26 +4,29 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* Styles for the modal to slide up from the bottom.
-  We control the visibility by adding/removing the 'modal-hidden' class with JavaScript.
-*/
-
-/* The semi-transparent backdrop */
+/* Styles for the modal to slide up from the bottom */
 .modal-container {
     transition: opacity 0.3s ease-in-out;
 }
-
-/* The white content pane that slides */
 .modal-content {
     transition: transform 0.3s ease-in-out;
 }
-
-/* Initial state: modal is off-screen at the bottom */
 .modal-hidden .modal-content {
     transform: translateY(100%);
 }
-
-/* Final state: modal is slid up into view */
 .modal-visible .modal-content {
     transform: translateY(0);
+}
+
+/* Styles for the new Auth Form */
+.auth-input {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }

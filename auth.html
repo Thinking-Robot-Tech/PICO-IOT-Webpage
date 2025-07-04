@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PICO IoT - Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100">
+
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="max-w-sm w-full">
+            <!-- Logo and Title -->
+            <div class="text-center mb-8">
+                <div class="mx-auto mb-4 w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                    <svg class="w-10 h-10 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.136 12.006a8.25 8.25 0 0113.728 0M2.002 8.974a11.25 11.25 0 0119.996 0A11.25 11.25 0 012.002 8.974z" />
+                    </svg>
+                </div>
+                <h1 id="formTitle" class="text-3xl font-bold text-gray-800">Welcome Back</h1>
+                <p id="formSubtitle" class="mt-2 text-gray-600">Please sign in to continue.</p>
+            </div>
+
+            <!-- Auth Form -->
+            <div class="bg-white p-8 rounded-2xl shadow-xl">
+                <form id="authForm">
+                    <!-- Name field (only for signup) -->
+                    <div id="nameField" class="hidden mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" id="name" name="name" class="auth-input mt-1 block w-full" placeholder="John Doe">
+                    </div>
+                    <!-- Email field -->
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" class="auth-input mt-1 block w-full" placeholder="you@example.com" required>
+                    </div>
+                    <!-- Password field -->
+                    <div class="mb-6">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" class="auth-input mt-1 block w-full" placeholder="••••••••" required>
+                    </div>
+                    <!-- Error Message Display -->
+                    <p id="errorMessage" class="text-sm text-red-500 text-center mb-4 h-4"></p>
+                    <!-- Submit Button -->
+                    <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition">
+                        Sign In
+                    </button>
+                </form>
+                <!-- Toggle link -->
+                <p class="text-center text-sm text-gray-500 mt-6">
+                    <span id="toggleText">Don't have an account?</span>
+                    <a href="#" id="toggleAuthMode" class="font-semibold text-blue-600 hover:text-blue-500">Sign Up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Your custom scripts -->
+    <script src="app.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
